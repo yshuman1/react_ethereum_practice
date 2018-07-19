@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
 class App extends Component {
@@ -16,9 +15,51 @@ class App extends Component {
         type: "function"
       },
       {
+        constant: false,
+        inputs: [],
+        name: "ReactExample",
+        outputs: [],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function"
+      },
+      {
+        constant: false,
+        inputs: [
+          {
+            name: "newState",
+            type: "string"
+          }
+        ],
+        name: "setState",
+        outputs: [],
+        payable: true,
+        stateMutability: "payable",
+        type: "function"
+      },
+      {
+        payable: true,
+        stateMutability: "payable",
+        type: "fallback"
+      },
+      {
         constant: true,
         inputs: [],
         name: "getSecret",
+        outputs: [
+          {
+            name: "",
+            type: "string"
+          }
+        ],
+        payable: false,
+        stateMutability: "view",
+        type: "function"
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "getState",
         outputs: [
           {
             name: "",
@@ -42,38 +83,51 @@ class App extends Component {
         payable: false,
         stateMutability: "view",
         type: "function"
-      },
-      {
-        constant: false,
-        inputs: [],
-        name: "ReactExample",
-        outputs: [],
-        payable: false,
-        stateMutability: "nonpayable",
-        type: "function"
-      },
-      {
-        payable: true,
-        stateMutability: "payable",
-        type: "fallback"
       }
     ]);
     this.state = {
       ContractInstance: MyContract.at(
-        "0xad10de4d7fabf535bf53ce0ec7bd8e04fe3e60d1"
+        "0x4e10e501d3290580a3338d000b38942960723141"
       )
     };
+    this.querySecret = this.querySecret.bind(this);
+    this.queryContractState = this.queryContractState.bind(this);
   }
+
+  querySecret() {
+    const { getSecret } = this.state.ContractInstance;
+
+    getSecret((err, secret) => {
+      if (err) console.error("An error occured::::", err);
+      console.log("This is our contract's secret::::", secret);
+    });
+  }
+
+  queryContractState() {
+    const { getState } = this.state.ContractInstance;
+
+    getState((err, state) => {
+      if (err) console.error("An error occured::::", err);
+      console.log("This is our contract's state::::", state);
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">React & Ethereum Simple Application</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <br />
+        <br />
+        <button onClick={this.querySecret}>
+          Query Smart Contract's Secret
+        </button>
+        <br />
+        <br />
+        <button onClick={this.queryContractState}>Query Contract State</button>
+        <br />
+        <br />
       </div>
     );
   }
