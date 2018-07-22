@@ -96,6 +96,7 @@ class App extends Component {
     this.handleContractStateSubmit = this.handleContractStateSubmit.bind(this);
     this.queryConditionResult = this.queryConditionResult.bind(this);
     this.activateExperiment.bind(this);
+    this.state.event = this.state.ContractInstance.ExperimentComplete();
   }
 
   queryConditionResult() {
@@ -159,6 +160,11 @@ class App extends Component {
   }
 
   render() {
+    this.state.event.watch((err, event) => {
+      if (err) console.error("An error occured::::", err);
+      console.log("This is the event::::", event);
+      console.log("This is the expirement result::::", event.args.result);
+    });
     return (
       <div className="App">
         <header className="App-header">
@@ -186,6 +192,18 @@ class App extends Component {
           />
           <button type="submit"> Submit </button>
         </form>
+        <br />
+        <br />
+        <button onClick={this.queryConditionResult}>
+          {" "}
+          Query Smart Contract Conditional Result{" "}
+        </button>
+        <br />
+        <br />
+        <button onClick={this.activateExperiment}>
+          {" "}
+          Start Experiment on Smart Contract{" "}
+        </button>
       </div>
     );
   }
