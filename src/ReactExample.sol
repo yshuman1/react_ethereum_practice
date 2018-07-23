@@ -7,7 +7,7 @@ contract Reactexample{
     string public you_awesome;
     string private state;
     bool public pseudoRandomResult;
-    event ExperimentComplete (bool result);
+    event experimentComplete (bool result);
 
     constructor () public {
     owner = msg.sender;
@@ -35,11 +35,11 @@ contract Reactexample{
     }
 
     function setExperimentInMotion () public payable returns (bool) {
-    bytes32 _pseudoRandomResult = keccak256(msg.sender,msg.value,msg.data);
+    bytes32 _pseudoRandomResult = keccak256(abi.encodePacked(msg.sender,msg.value,msg.data));
     if (_pseudoRandomResult > bytes32 (10)) return pseudoRandomResult = true;
     else return pseudoRandomResult = false;
 
-    emit ExperimentComplete (pseudoRandomResult);
+    emit experimentComplete (pseudoRandomResult);
   }
     
     

@@ -6,6 +6,18 @@ class App extends Component {
     super(props);
     const MyContract = window.web3.eth.contract([
       {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            name: "result",
+            type: "bool"
+          }
+        ],
+        name: "experimentComplete",
+        type: "event"
+      },
+      {
         constant: false,
         inputs: [],
         name: "kill",
@@ -17,10 +29,15 @@ class App extends Component {
       {
         constant: false,
         inputs: [],
-        name: "ReactExample",
-        outputs: [],
-        payable: false,
-        stateMutability: "nonpayable",
+        name: "setExperimentInMotion",
+        outputs: [
+          {
+            name: "",
+            type: "bool"
+          }
+        ],
+        payable: true,
+        stateMutability: "payable",
         type: "function"
       },
       {
@@ -41,6 +58,12 @@ class App extends Component {
         payable: true,
         stateMutability: "payable",
         type: "fallback"
+      },
+      {
+        inputs: [],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "constructor"
       },
       {
         constant: true,
@@ -73,6 +96,20 @@ class App extends Component {
       {
         constant: true,
         inputs: [],
+        name: "pseudoRandomResult",
+        outputs: [
+          {
+            name: "",
+            type: "bool"
+          }
+        ],
+        payable: false,
+        stateMutability: "view",
+        type: "function"
+      },
+      {
+        constant: true,
+        inputs: [],
         name: "you_awesome",
         outputs: [
           {
@@ -86,21 +123,22 @@ class App extends Component {
       }
     ]);
     this.state = {
-      ContractInstance: MyContract.at(
-        "0x9fbda871d559710256a2502a2517b794b482db40"
+      contractInstance: MyContract.at(
+        "0xfdfd4e9ca8e29736f4ecb7638564fa059e0088fa"
       ),
       contractState: " "
     };
+
     this.querySecret = this.querySecret.bind(this);
     this.queryContractState = this.queryContractState.bind(this);
     this.handleContractStateSubmit = this.handleContractStateSubmit.bind(this);
     this.queryConditionResult = this.queryConditionResult.bind(this);
     this.activateExperiment.bind(this);
-    this.state.event = this.state.ContractInstance.ExperimentComplete();
+    this.state.event = this.state.contractInstance.experimentComplete();
   }
 
   queryConditionResult() {
-    const { psuedoRandomResult } = this.state.ContractInstance;
+    const { psuedoRandomResult } = this.state.contractInstance;
 
     psuedoRandomResult((err, result) => {
       console.log("this is the smart contract conditional::::", result);
@@ -108,7 +146,7 @@ class App extends Component {
   }
 
   activateExperiment() {
-    const { setExperimentInMotion } = this.state.ContractInstance;
+    const { setExperimentInMotion } = this.state.contractInstance;
 
     setExperimentInMotion(
       {
@@ -123,7 +161,7 @@ class App extends Component {
   }
 
   querySecret() {
-    const { getSecret } = this.state.ContractInstance;
+    const { getSecret } = this.state.contractInstance;
 
     getSecret((err, secret) => {
       if (err) console.error("An error occured::::", err);
@@ -132,7 +170,7 @@ class App extends Component {
   }
 
   queryContractState() {
-    const { getState } = this.state.ContractInstance;
+    const { getState } = this.state.contractInstance;
 
     getState((err, state) => {
       if (err) console.error("An error occured::::", err);
@@ -143,7 +181,7 @@ class App extends Component {
   handleContractStateSubmit(event) {
     event.preventDefault();
 
-    const { setState } = this.state.ContractInstance;
+    const { setState } = this.state.contractInstance;
     const { contractState: newState } = this.state;
 
     setState(
