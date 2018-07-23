@@ -141,6 +141,7 @@ class App extends Component {
     const { psuedoRandomResult } = this.state.contractInstance;
 
     psuedoRandomResult((err, result) => {
+      if (err) console.error("An error occured::::", err);
       console.log("this is the smart contract conditional::::", result);
     });
   }
